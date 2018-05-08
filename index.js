@@ -121,6 +121,30 @@ class JsonQuery {
         return this;
     }
 
+    whereIn(key, val) {
+        this.where(key, 'in', val);
+
+        return this;
+    }
+
+    whereNotIn(key, val) {
+        this.where(key, 'notin', val);
+
+        return this;
+    }
+
+    whereNull(key) {
+        this.where(key, 'null', null);
+
+        return this;
+    }
+
+    whereNotNull(key) {
+        this.where(key, 'notnull', null);
+
+        return this;
+    }
+
     sum(column) {
         return this._jsonContent.reduce((acc, current) => {
             return Number(acc) + Number(current[column]);
