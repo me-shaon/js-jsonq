@@ -4,6 +4,17 @@ const fs = require('fs');
 class JsonQuery {
     constructor(filepath = '') {
         this.setPath(filepath);
+        this._resetQueries();
+
+        this._condMapper = {
+            '=': '_equals',
+            '!=': '_notEquals'
+        };
+    }
+
+    _resetQueries() {
+        this._queries = [];
+        this._currentQueryInd = 0;
     }
 
     import(filepath) {}
@@ -18,7 +29,7 @@ class JsonQuery {
                 path.resolve(__dirname, this.filePath)
             );
 
-            this.jsonContent = JSON.parse(this.rawContent);
+            this._jsonContent = JSON.parse(this.rawContent);
         }
     }
 
@@ -27,16 +38,16 @@ class JsonQuery {
         this._parseJsonFromFile();
     }
 
-    get() {
-        return this.jsonContent;
+    fetch() {
+        return this._jsonContent;
     }
 
-    _fetch(key, data) {
+    _get(key, data) {
         if (!(key in data)) {
             throw Error('Data not exists');
         }
 
-        return this.jsonContent[key];
+        return this._jsonContent[key];
     }
 
     from(path) {
@@ -46,20 +57,80 @@ class JsonQuery {
             .filter(val => val != '');
 
         for (const key of keyParts) {
-            this.jsonContent = this._fetch(key, this.jsonContent);
+            this._jsonContent = this._get(key, this._jsonContent);
         }
 
         return this;
     }
 
     prepare() {
+        this._executeQueries();
+        this._resetQueries();
+
         return this;
+    }
+
+    _executeQueries() {
+        this._jsonContent = this._jsonContent.filter(elem => {
+            let orPassed = false;
+            for (const queryList of this._queries) {
+                let andPassed = true;
+                for (const query of queryList) {
+                    andPassed &= this[this._condMapper[query.op]](
+                        elem[query.key],
+                        query.val
+                    );
+                }
+
+                orPassed |= andPassed;
+            }
+
+            return orPassed;
+        });
     }
 
     find(path = '') {
         return this.from(path)
             .prepare()
             .get();
+    }
+
+    _insertQuery(query) {
+        const index = this._currentQueryInd;
+        if (!(index in this._queries)) {
+            this._queries.push([]);
+        }
+
+        this._queries[index].push(query);
+    }
+
+    where(key, op, val) {
+        if (key instanceof Function) {
+            key(this);
+        } else {
+            this._insertQuery({ key, op, val });
+        }
+
+        return this;
+    }
+
+    orWhere(key, op, val) {
+        this._currentQueryInd++;
+        if (key instanceof Function) {
+            key(this);
+        } else {
+            this._insertQuery({ key, op, val });
+        }
+
+        return this;
+    }
+
+    _equals(left_val, right_val) {
+        return left_val == right_val;
+    }
+
+    _notEquals(left_val, right_val) {
+        return left_val != right_val;
     }
 }
 
