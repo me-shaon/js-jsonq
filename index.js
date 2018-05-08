@@ -64,8 +64,10 @@ class JsonQuery {
     }
 
     prepare() {
-        this._executeQueries();
-        this._resetQueries();
+        if (this._queries.length > 0) {
+            this._executeQueries();
+            this._resetQueries();
+        }
 
         return this;
     }
@@ -131,6 +133,12 @@ class JsonQuery {
 
     _notEquals(left_val, right_val) {
         return left_val != right_val;
+    }
+
+    sum(column) {
+        return this._jsonContent.reduce((acc, current) => {
+            return Number(acc) + Number(current[column]);
+        }, 0);
     }
 }
 
