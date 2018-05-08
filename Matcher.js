@@ -7,6 +7,10 @@ class Matcher {
             '<': 'isSmaller',
             '>=': 'isGreaterOrEqual',
             '<=': 'isSmallerOrEqual',
+            'in': 'isIn',
+            'notin': 'isNotIn',
+            'null': 'isNull',
+            'notnull': 'isNotNull'
         };
     }
 
@@ -32,6 +36,22 @@ class Matcher {
 
     isSmallerOrEqual(left_val, right_val) {
         return left_val <= right_val;
+    }
+
+    isIn(key, arr) {
+        return Array.isArray(arr) && arr.includes(key);
+    }
+
+    isNotIn(key, arr) {
+        return !(Array.isArray(arr) && arr.includes(key));
+    }
+
+    isNUll(key) {
+        return val === null;
+    }
+
+    isNotNull(val) {
+        return val !== null;
     }
 
     match(left_val, op, right_val) {
