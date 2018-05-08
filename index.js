@@ -1,15 +1,12 @@
 const path = require('path');
 const fs = require('fs');
+const Matcher = require('./Matcher');
 
 class JsonQuery {
     constructor(filepath = '') {
         this.setPath(filepath);
         this._resetQueries();
-
-        this._condMapper = {
-            '=': '_equals',
-            '!=': '_notEquals'
-        };
+        this.matcher = new Matcher();
     }
 
     _resetQueries() {
@@ -78,10 +75,7 @@ class JsonQuery {
             for (const queryList of this._queries) {
                 let andPassed = true;
                 for (const query of queryList) {
-                    andPassed &= this[this._condMapper[query.op]](
-                        elem[query.key],
-                        query.val
-                    );
+                    andPassed &= this.matcher.match(elem[query.key], query.op, query.val);
                 }
 
                 orPassed |= andPassed;
@@ -125,14 +119,6 @@ class JsonQuery {
         }
 
         return this;
-    }
-
-    _equals(left_val, right_val) {
-        return left_val == right_val;
-    }
-
-    _notEquals(left_val, right_val) {
-        return left_val != right_val;
     }
 
     sum(column) {
