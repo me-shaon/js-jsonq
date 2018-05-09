@@ -3,6 +3,8 @@ class Matcher {
         this.condMapper = {
             '=': 'isEqual',
             '!=': 'isNotEqual',
+            '==': 'isStrictEqual',
+            '!==': 'isStrictNotEqual',
             '>': 'isGreater',
             '<': 'isSmaller',
             '>=': 'isGreaterOrEqual',
@@ -21,8 +23,16 @@ class Matcher {
         return left_val == right_val;
     }
 
+    isStrictEqual(left_val, right_val) {
+        return left_val === right_val;
+    }
+
     isNotEqual(left_val, right_val) {
         return left_val != right_val;
+    }
+
+    isStrictNotEqual(left_val, right_val) {
+        return left_val !== right_val;
     }
 
     isGreater(left_val, right_val) {
