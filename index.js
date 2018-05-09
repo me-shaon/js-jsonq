@@ -196,12 +196,17 @@ class JsonQuery {
         return this;
     }
 
-    /* ---------- Aggregator Methods -------------c */
+    /* ---------- Aggregate Methods -------------c */
     sum(column) {
         return this._jsonContent.reduce(
-            (acc, current) => Number(acc) + Number(current[column]),
+            (acc, current) =>
+                Number(acc) + Number(column ? current[column] : current),
             0
         );
+    }
+
+    count() {
+        return this._jsonContent.length;
     }
 }
 
