@@ -3,10 +3,19 @@ const fs = require('fs');
 const Matcher = require('./Matcher');
 
 class JsonQuery {
-    constructor(filepath = '') {
-        this.setPath(filepath);
+    constructor(filePath = '') {
+        if (filePath != '') {
+            this.setPath(filePath.trim());
+        }
+
         this._resetQueries();
-        this.matcher = new Matcher();
+        this._matcher = new Matcher();
+    }
+
+    setPath(filePath) {
+        this._parseJsonFromFile(filePath);
+
+        return this;
     }
 
     _resetQueries() {
@@ -14,23 +23,42 @@ class JsonQuery {
         this._currentQueryInd = 0;
     }
 
-    _parseJsonFromFile() {
-        if (this.filePath != '') {
-            if (path.extname(this.filePath) != '.json') {
-                throw Error('Not a valid Json File');
-            }
-
-            this.rawContent = fs.readFileSync(
-                path.resolve(__dirname, this.filePath)
-            );
-
-            this._jsonContent = JSON.parse(this.rawContent);
+    _parseJsonFromFile(filePath) {
+        if (filePath == '' || path.extname(filePath) != '.json') {
+            throw Error('Not a valid Json File');
         }
+
+        this._rawContent = fs.readFileSync(path.resolve(__dirname, filePath));
+
+        this.json(JSON.parse(this._rawContent));
     }
 
-    setPath(filepath) {
-        this.filePath = filepath;
-        this._parseJsonFromFile();
+    json(jsonObject) {
+        if (!(Array.isArray(jsonObject) || jsonObject instanceof Object)) {
+            throw Error('Invalid Json data');
+        }
+
+        this._baseContent = jsonObject;
+
+        this.reset(this._baseContent);
+
+        return this;
+    }
+
+    reset(data) {
+        data = data || this._baseContent;
+
+        if (Array.isArray(data)) {
+            this._jsonContent = Array.from(data);
+        } else {
+            this._jsonContent = Object.assign({}, data);
+        }
+
+        return this;
+    }
+
+    clone() {
+        return Object.assign(Object.create(Object.getPrototypeOf(this)), this);
     }
 
     fetch() {
@@ -73,7 +101,7 @@ class JsonQuery {
             for (const queryList of this._queries) {
                 let andPassed = true;
                 for (const query of queryList) {
-                    andPassed &= this.matcher.match(
+                    andPassed &= this._matcher.match(
                         elem[query.key],
                         query.op,
                         query.val
@@ -137,13 +165,13 @@ class JsonQuery {
     }
 
     whereNull(key) {
-        this.where(key, 'null', null);
+        this.where(key, 'null');
 
         return this;
     }
 
     whereNotNull(key) {
-        this.where(key, 'notnull', null);
+        this.where(key, 'notnull');
 
         return this;
     }

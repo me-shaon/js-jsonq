@@ -46,7 +46,7 @@ class Matcher {
         return Array.isArray(arr) && !arr.includes(key);
     }
 
-    isNUll(key) {
+    isNull(val) {
         return val === null;
     }
 
