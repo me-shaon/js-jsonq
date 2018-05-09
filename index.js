@@ -14,8 +14,6 @@ class JsonQuery {
         this._currentQueryInd = 0;
     }
 
-    import(filepath) {}
-
     _parseJsonFromFile() {
         if (this.filePath != '') {
             if (path.extname(this.filePath) != '.json') {
@@ -75,7 +73,11 @@ class JsonQuery {
             for (const queryList of this._queries) {
                 let andPassed = true;
                 for (const query of queryList) {
-                    andPassed &= this.matcher.match(elem[query.key], query.op, query.val);
+                    andPassed &= this.matcher.match(
+                        elem[query.key],
+                        query.op,
+                        query.val
+                    );
                 }
 
                 orPassed |= andPassed;
@@ -85,12 +87,6 @@ class JsonQuery {
         });
     }
 
-    find(path = '') {
-        return this.from(path)
-            .prepare()
-            .get();
-    }
-
     _insertQuery(query) {
         const index = this._currentQueryInd;
         if (!(index in this._queries)) {
@@ -98,6 +94,13 @@ class JsonQuery {
         }
 
         this._queries[index].push(query);
+    }
+
+    /* ---------- Query Methods ------------- */
+    find(path = '') {
+        return this.from(path)
+            .prepare()
+            .get();
     }
 
     where(key, op, val) {
@@ -145,10 +148,12 @@ class JsonQuery {
         return this;
     }
 
+    /* ---------- Aggregator Methods -------------c */
     sum(column) {
-        return this._jsonContent.reduce((acc, current) => {
-            return Number(acc) + Number(current[column]);
-        }, 0);
+        return this._jsonContent.reduce(
+            (acc, current) => Number(acc) + Number(current[column]),
+            0
+        );
     }
 }
 
