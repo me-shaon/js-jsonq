@@ -54,6 +54,8 @@ class JsonQuery {
             this._jsonContent = Object.assign({}, data);
         }
 
+        this._resetQueries();
+
         return this;
     }
 
@@ -172,6 +174,24 @@ class JsonQuery {
 
     whereNotNull(key) {
         this.where(key, 'notnull');
+
+        return this;
+    }
+
+    whereStartsWith(key, val) {
+        this.where(key, 'startswith', val);
+
+        return this;
+    }
+
+    whereEndsWith(key, val) {
+        this.where(key, 'endswith', val);
+
+        return this;
+    }
+
+    whereContains(key, val) {
+        this.where(key, 'contains', val);
 
         return this;
     }

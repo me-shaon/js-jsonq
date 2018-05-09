@@ -10,7 +10,10 @@ class Matcher {
             in: 'isIn',
             notin: 'isNotIn',
             null: 'isNull',
-            notnull: 'isNotNull'
+            notnull: 'isNotNull',
+            startswith: 'isStartWith',
+            endswith: 'isEndWith',
+            contains: 'isContain'
         };
     }
 
@@ -52,6 +55,18 @@ class Matcher {
 
     isNotNull(val) {
         return val !== null;
+    }
+
+    isStartWith(data, val) {
+        return data.startsWith(val);
+    }
+
+    isEndWith(data, val) {
+        return data.endsWith(val);
+    }
+
+    isContain(data, val) {
+        return data.includes(val);
     }
 
     match(left_val, op, right_val) {
