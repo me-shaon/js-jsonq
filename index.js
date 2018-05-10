@@ -235,6 +235,31 @@ class JsonQuery {
 
         return this.sum(property) / this.count();
     }
+
+    first() {
+        this._prepare();
+
+        return this.count() > 0 ? this._jsonContent[0] : null;
+    }
+
+    last() {
+        this._prepare();
+
+        return this.count() > 0 ? this._jsonContent[this.count() - 1] : null;
+    }
+
+    nth(index) {
+        this._prepare();
+
+        const abs_index = Math.abs(index);
+
+        if (!Number.isInteger(index) || this.count() < abs_index || index == 0)
+            return null;
+
+        return index > 0
+            ? this._jsonContent[index - 1]
+            : this._jsonContent[this.count() + index];
+    }
 }
 
 module.exports = JsonQuery;
