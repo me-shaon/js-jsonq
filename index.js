@@ -197,16 +197,36 @@ class JsonQuery {
     }
 
     /* ---------- Aggregate Methods -------------c */
-    sum(column) {
+    sum(property) {
         return this._jsonContent.reduce(
             (acc, current) =>
-                Number(acc) + Number(column ? current[column] : current),
+                Number(acc) + Number(column ? current[property] : current),
             0
         );
     }
 
     count() {
         return this._jsonContent.length;
+    }
+
+    max(property) {
+        return this._jsonContent.reduce((max, current) => {
+            const elem = property ? current[property] : current;
+
+            return max > elem ? max : elem;
+        }, property ? this._jsonContent[0][property] : this._jsonContent[0]);
+    }
+
+    min(property) {
+        return this._jsonContent.reduce((min, current) => {
+            const elem = property ? current[property] : current;
+
+            return min < elem ? min : elem;
+        }, property ? this._jsonContent[0][property] : this._jsonContent[0]);
+    }
+
+    avg(property) {
+        return this.sum(property) / this.count();
     }
 }
 
