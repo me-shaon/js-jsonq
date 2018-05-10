@@ -76,7 +76,7 @@ class JsonQuery {
         return this._jsonContent[key];
     }
 
-    from(path) {
+    at(path) {
         const keyParts = path
             .trim()
             .split('.')
