@@ -2,13 +2,21 @@ class Matcher {
     constructor() {
         this.condMapper = {
             '=': 'isEqual',
+            eq: 'isEqual',
             '!=': 'isNotEqual',
+            neq: 'isNotEqual',
             '==': 'isStrictEqual',
+            seq: 'isStrictEqual',
             '!==': 'isStrictNotEqual',
+            sneq: 'isStrictNotEqual',
             '>': 'isGreater',
-            '<': 'isSmaller',
+            gt: 'isGreater',
+            '<': 'isLess',
+            lt: 'isLess',
             '>=': 'isGreaterOrEqual',
-            '<=': 'isSmallerOrEqual',
+            gte: 'isGreaterOrEqual',
+            '<=': 'isLessOrEqual',
+            lte: 'isLessOrEqual',
             in: 'isIn',
             notin: 'isNotIn',
             null: 'isNull',
@@ -39,7 +47,7 @@ class Matcher {
         return left_val > right_val;
     }
 
-    isSmaller(left_val, right_val) {
+    isLess(left_val, right_val) {
         return left_val < right_val;
     }
 
@@ -47,7 +55,7 @@ class Matcher {
         return left_val >= right_val;
     }
 
-    isSmallerOrEqual(left_val, right_val) {
+    isLessOrEqual(left_val, right_val) {
         return left_val <= right_val;
     }
 
