@@ -64,6 +64,7 @@ class JsonQuery {
     }
 
     fetch() {
+        this._prepare();
         return this._jsonContent;
     }
 
@@ -88,13 +89,11 @@ class JsonQuery {
         return this;
     }
 
-    prepare() {
+    _prepare() {
         if (this._queries.length > 0) {
             this._executeQueries();
             this._resetQueries();
         }
-
-        return this;
     }
 
     _executeQueries() {
@@ -128,9 +127,7 @@ class JsonQuery {
 
     /* ---------- Query Methods ------------- */
     find(path = '') {
-        return this.from(path)
-            .prepare()
-            .get();
+        return this.from(path).fetch();
     }
 
     where(key, op, val) {
@@ -198,6 +195,8 @@ class JsonQuery {
 
     /* ---------- Aggregate Methods -------------c */
     sum(property) {
+        this._prepare();
+
         return this._jsonContent.reduce(
             (acc, current) =>
                 Number(acc) + Number(column ? current[property] : current),
@@ -206,10 +205,14 @@ class JsonQuery {
     }
 
     count() {
+        this._prepare();
+
         return this._jsonContent.length;
     }
 
     max(property) {
+        this._prepare();
+
         return this._jsonContent.reduce((max, current) => {
             const elem = property ? current[property] : current;
 
@@ -218,6 +221,8 @@ class JsonQuery {
     }
 
     min(property) {
+        this._prepare();
+
         return this._jsonContent.reduce((min, current) => {
             const elem = property ? current[property] : current;
 
@@ -226,6 +231,8 @@ class JsonQuery {
     }
 
     avg(property) {
+        this._prepare();
+
         return this.sum(property) / this.count();
     }
 }
