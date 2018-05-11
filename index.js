@@ -260,6 +260,44 @@ class JsonQuery {
             ? this._jsonContent[index - 1]
             : this._jsonContent[this.count() + index];
     }
+
+    exists() {
+        this._prepare();
+
+        if (Array.isArray(this._jsonContent) && this._jsonContent.length > 0) {
+            return true;
+        } else if (this._jsonContent) {
+            return true;
+        }
+
+        return false;
+    }
+
+    groupBy(property) {
+        if (!property) {
+            throw Error(
+                `A 'property' parameter must be given to groupBy() method`
+            );
+        }
+
+        this._prepare();
+
+        const groupedData = {};
+
+        this._jsonContent.forEach(data => {
+            if (property in data) {
+                if (!(data[property] in groupedData)) {
+                    groupedData[data[property]] = [];
+                }
+
+                groupedData[data[property]].push(data);
+            }
+        });
+
+        this._jsonContent = groupedData;
+
+        return this;
+    }
 }
 
 module.exports = JsonQuery;
