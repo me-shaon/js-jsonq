@@ -24,7 +24,8 @@ class Matcher {
             startswith: 'isStartWith',
             endswith: 'isEndWith',
             contains: 'isContain',
-            match: 'hasMatch'
+            match: 'hasMatch',
+            macro: 'execMacro'
         };
     }
 
@@ -90,6 +91,14 @@ class Matcher {
 
     hasMatch(val, pattern) {
         return RegExp(pattern).test(val);
+    }
+
+    execMacro(val, fn) {
+        if (fn instanceof Function) {
+            return fn(val);
+        }
+
+        return false;
     }
 
     check(left_val, op, right_val) {
