@@ -89,6 +89,10 @@ class JsonQuery {
         return this;
     }
 
+    from(path) {
+        return this.at(path);
+    }
+
     _prepare() {
         if (this._queries.length > 0) {
             this._executeQueries();
