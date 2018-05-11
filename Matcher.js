@@ -23,7 +23,8 @@ class Matcher {
             notnull: 'isNotNull',
             startswith: 'isStartWith',
             endswith: 'isEndWith',
-            contains: 'isContain'
+            contains: 'isContain',
+            match: 'hasMatch'
         };
     }
 
@@ -87,7 +88,11 @@ class Matcher {
         return data.includes(val);
     }
 
-    match(left_val, op, right_val) {
+    hasMatch(val, pattern) {
+        return RegExp(pattern).test(val);
+    }
+
+    check(left_val, op, right_val) {
         if (!(op in this.condMapper)) {
             throw Error('Invalid where condition given');
         }

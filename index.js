@@ -102,7 +102,7 @@ class JsonQuery {
             for (const queryList of this._queries) {
                 let andPassed = true;
                 for (const query of queryList) {
-                    andPassed &= this._matcher.match(
+                    andPassed &= this._matcher.check(
                         elem[query.key],
                         query.op,
                         query.val
