@@ -298,6 +298,91 @@ class JsonQuery {
 
         return this;
     }
+
+    sort(order = 'asc') {
+        this._prepare();
+
+        if (!Array.isArray(this._jsonContent)) {
+            return this;
+        }
+
+        this._jsonContent.sort((a, b) => {
+            // if a compare method is given as first parameter
+            if (order instanceof Function) {
+                return order(a, b);
+            } else {
+                if (typeof a === 'string' || a instanceof String) {
+                    a = a.toLowerCase();
+                }
+
+                if (typeof b === 'string' || b instanceof String) {
+                    b = b.toLowerCase();
+                }
+
+                //comparison
+                if (a < b) {
+                    return order == 'asc' ? -1 : 1;
+                } else if (a > b) {
+                    return order == 'asc' ? 1 : -1;
+                }
+
+                return 0;
+            }
+        });
+
+        return this;
+    }
+
+    sortBy(property, order = 'asc') {
+        if (!property) {
+            throw Error(
+                `A 'property' parameter must be given to sortAs() method`
+            );
+        }
+
+        this._prepare();
+
+        if (!Array.isArray(this._jsonContent)) {
+            return this;
+        }
+
+        this._jsonContent.sort((a, b) => {
+            let elem_a = a;
+            let elem_b = b;
+
+            if (elem_a instanceof Object && property in elem_a) {
+                elem_a = a[property];
+            }
+
+            if (elem_b instanceof Object && property in elem_b) {
+                elem_b = b[property];
+            }
+
+            // if a compare method is given as second parameter
+            if (order instanceof Function) {
+                return order(elem_a, elem_b);
+            } else {
+                if (typeof elem_a === 'string' || elem_a instanceof String) {
+                    elem_a = elem_a.toLowerCase();
+                }
+
+                if (typeof elem_b === 'string' || elem_b instanceof String) {
+                    elem_b = elem_b.toLowerCase();
+                }
+
+                //comparison
+                if (elem_a < elem_b) {
+                    return order == 'asc' ? -1 : 1;
+                } else if (elem_a > elem_b) {
+                    return order == 'asc' ? 1 : -1;
+                }
+
+                return 0;
+            }
+        });
+
+        return this;
+    }
 }
 
 module.exports = JsonQuery;
