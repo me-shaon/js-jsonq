@@ -127,7 +127,7 @@ class JsonQuery {
 
     /* ---------- Query Methods ------------- */
     find(path = '') {
-        return this.from(path).fetch();
+        return this.at(path).fetch();
     }
 
     where(key, op, val) {
