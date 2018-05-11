@@ -1,8 +1,8 @@
 {
-  "name": "JsonQuery",
-  "version": "1.0.0",
-  "description": "A simple Javascript Library to Query over Json Data",
-  "main": "index.js",
-  "author": "me-shaon",
-  "license": "MIT"
+    "name": "JsonQuery",
+    "version": "1.0.0",
+    "description": "A simple Javascript Library to Query over Json Data",
+    "main": "index.js",
+    "author": "me-shaon",
+    "license": "CC0 1.0 Universal"
 }
