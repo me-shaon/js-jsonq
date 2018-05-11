@@ -1,4 +1,9 @@
 class Matcher {
+    /**
+     * constructor
+     *
+     * @returns
+     */
     constructor() {
         this.condMapper = {
             '=': 'isEqual',
@@ -29,70 +34,206 @@ class Matcher {
         };
     }
 
-    isEqual(left_val, right_val) {
-        return left_val == right_val;
+    /**
+     * isEqual - Checks if the given values are equal
+     *
+     * @param {mixed} a
+     * @param {mixed} b
+     *
+     * @returns {bool}
+     */
+    isEqual(a, b) {
+        return a == b;
     }
 
-    isStrictEqual(left_val, right_val) {
-        return left_val === right_val;
+    /**
+     * isStrictEqual - Checks if the given values are Strictly equal
+     *
+     * @param {mixed} a
+     * @param {mixed} b
+     *
+     * @returns {bool}
+     */
+    isStrictEqual(a, b) {
+        return a === b;
     }
 
-    isNotEqual(left_val, right_val) {
-        return left_val != right_val;
+    /**
+     * isNotEqual - Checks if the given values are not equal
+     *
+     * @param {mixed} a
+     * @param {mixed} b
+     *
+     * @returns {bool}
+     */
+    isNotEqual(a, b) {
+        return a != b;
     }
 
-    isStrictNotEqual(left_val, right_val) {
-        return left_val !== right_val;
+    /**
+     * isStrictNotEqual - Checks if the given values are Strictly not equal
+     *
+     * @param {mixed} a
+     * @param {mixed} b
+     *
+     * @returns {bool}
+     */
+    isStrictNotEqual(a, b) {
+        return a !== b;
     }
 
-    isGreater(left_val, right_val) {
-        return left_val > right_val;
+    /**
+     * isGreater - Checks if the given value 'a' is greater than given value 'b'
+     *
+     * @param {mixed} a
+     * @param {mixed} b
+     *
+     * @returns {bool}
+     */
+    isGreater(a, b) {
+        return a > b;
     }
 
-    isLess(left_val, right_val) {
-        return left_val < right_val;
+    /**
+     * isLess - Checks if the given value 'a' is less than given value 'b'
+     *
+     * @param {mixed} a
+     * @param {mixed} b
+     *
+     * @returns {bool}
+     */
+    isLess(a, b) {
+        return a < b;
     }
 
-    isGreaterOrEqual(left_val, right_val) {
-        return left_val >= right_val;
+    /**
+     * isGreaterOrEqual - Checks if the given value 'a' is greater or equal
+     * than given value 'b'
+     *
+     * @param {mixed} a
+     * @param {mixed} b
+     *
+     * @returns {bool}
+     */
+    isGreaterOrEqual(a, b) {
+        return a >= b;
     }
 
-    isLessOrEqual(left_val, right_val) {
-        return left_val <= right_val;
+    /**
+     * isLessOrEqual - Checks if the given value 'a' is less or equal
+     * than given value 'b'
+     *
+     * @param {mixed} a
+     * @param {mixed} b
+     *
+     * @returns {bool}
+     */
+    isLessOrEqual(a, b) {
+        return a <= b;
     }
 
+    /**
+     * isIn - Checks if the given 'key' is in given array 'arr'
+     *
+     * @param {mixed} key
+     * @param {Array} arr
+     *
+     * @returns {bool}
+     */
     isIn(key, arr) {
         return Array.isArray(arr) && arr.includes(key);
     }
 
+    /**
+     * isNotIn - Checks if the given 'key' is not in given array 'arr'
+     *
+     * @param {mixed} key
+     * @param {Array} arr
+     *
+     * @returns {bool}
+     */
     isNotIn(key, arr) {
         return Array.isArray(arr) && !arr.includes(key);
     }
 
+    /**
+     * isNull - Checks if the given 'val' is null
+     *
+     * @param {mixed} val
+     *
+     * @returns {bool}
+     */
     isNull(val) {
         return val === null;
     }
 
+    /**
+     * isNotNull - Checks if the given 'val' is not null
+     *
+     * @param {mixed} val
+     *
+     * @returns {bool}
+     */
     isNotNull(val) {
         return val !== null;
     }
 
-    isStartWith(data, val) {
-        return data.startsWith(val);
+    /**
+     * isStartWith - Checks if the given string 'str' starts with given 'val'
+     *
+     * @param {string} str
+     * @param {string} val
+     *
+     * @returns {bool}
+     */
+    isStartWith(str, val) {
+        return str.startsWith(val);
     }
 
-    isEndWith(data, val) {
-        return data.endsWith(val);
+    /**
+     * isEndWith - Checks if the given string 'str' ends with given 'val'
+     *
+     * @param {string} str
+     * @param {string} val
+     *
+     * @returns {bool}
+     */
+    isEndWith(str, val) {
+        return str.endsWith(val);
     }
 
-    isContain(data, val) {
-        return data.includes(val);
+    /**
+     * isContain - Checks if the given string 'str' contains given 'val'
+     *
+     * @param {string} str
+     * @param {string} val
+     *
+     * @returns {bool}
+     */
+    isContain(str, val) {
+        return str.includes(val);
     }
 
-    hasMatch(val, pattern) {
+    /**
+     * hasMatch - Checks if the given string 'str' has a match for given RegExp
+     *
+     * @param {string} str
+     * @param {RegExp} pattern
+     *
+     * @returns {bool}
+     */
+    hasMatch(str, pattern) {
         return RegExp(pattern).test(val);
     }
 
+    /**
+     * execMacro - execute the given Function and returns the result based on that
+     *
+     * @param {mixed} val
+     * @param {Function} fn
+     *
+     * @returns {bool}
+     */
     execMacro(val, fn) {
         if (fn instanceof Function) {
             return fn(val);
@@ -101,12 +242,21 @@ class Matcher {
         return false;
     }
 
-    check(left_val, op, right_val) {
+    /**
+     * check - compare the given 'a' and 'b' based on 'op'
+     *
+     * @param {mixed} a
+     * @param {string} op
+     * @param {mixed} b
+     *
+     * @returns {bool}
+     */
+    check(a, op, b) {
         if (!(op in this.condMapper)) {
             throw Error('Invalid where condition given');
         }
 
-        return this[this.condMapper[op]](left_val, right_val);
+        return this[this.condMapper[op]](a, b);
     }
 }
 

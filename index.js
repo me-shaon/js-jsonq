@@ -1,52 +1,44 @@
-const path = require('path');
-const fs = require('fs');
-const Matcher = require('./Matcher');
+const { parseJson, getByProperty, compare } = require('./Helpers');
+const QueryManager = require('./QueryManager');
 
 class JsonQuery {
-    constructor(filePath = '') {
-        if (filePath != '') {
-            this.setPath(filePath.trim());
+    /**
+     * constructor - A JsonQuery Object can be initialized with a filepath{type: string}
+     * or a Json String{type: string} or a Json Object {type: Object}
+     *
+     * @param {string|Object} json required
+     *
+     * @returns
+     * @throws {Error}
+     */
+    constructor(json) {
+        if (!json) {
+            throw Error(
+                'You must pass a filePath or a Json Object or a Json String as parameter'
+            );
         }
 
-        this._resetQueries();
-        this._matcher = new Matcher();
+        this._baseContent = parseJson(json);
+
+        this._queryManager = new QueryManager();
+
+        this.reset();
     }
 
-    setPath(filePath) {
-        this._parseJsonFromFile(filePath);
-
-        return this;
-    }
-
-    _resetQueries() {
-        this._queries = [];
-        this._currentQueryInd = 0;
-    }
-
-    _parseJsonFromFile(filePath) {
-        if (filePath == '' || path.extname(filePath) != '.json') {
-            throw Error('Not a valid Json File');
-        }
-
-        this._rawContent = fs.readFileSync(path.resolve(__dirname, filePath));
-
-        this.json(JSON.parse(this._rawContent));
-    }
-
-    json(jsonObject) {
-        if (!(Array.isArray(jsonObject) || jsonObject instanceof Object)) {
-            throw Error('Invalid Json data');
-        }
-
-        this._baseContent = jsonObject;
-
-        this.reset(this._baseContent);
-
-        return this;
-    }
-
+    /**
+     * reset - A JsonQuery Object can be reset to new data according to the
+     * given filepath{type: string} or a Json String{type: string}
+     * or a Json Object {type: Object}.
+     * The method parameter 'data' is optional. If no 'data' given,
+     * the JsonQuery Object will be reset to the previously initialized data.
+     * All the query and processing done so far will be reset to initial state too.
+     *
+     * @param {string|Object} data optional
+     *
+     * @returns {JsonQuery} Object reference
+     */
     reset(data) {
-        data = data || this._baseContent;
+        data = parseJson(data || this._baseContent);
 
         if (Array.isArray(data)) {
             this._jsonContent = Array.from(data);
@@ -54,28 +46,49 @@ class JsonQuery {
             this._jsonContent = Object.assign({}, data);
         }
 
-        this._resetQueries();
+        this._queryManager.reset();
 
         return this;
     }
 
+    /**
+     * clone - Clone and return the exact same copy of the this Object instance
+     *
+     * @returns {JsonQuery}
+     */
     clone() {
         return Object.assign(Object.create(Object.getPrototypeOf(this)), this);
     }
 
+    /**
+     * _prepare - Pseudo private method to process data based on the queries
+     *
+     * @returns {None}
+     */
+    _prepare() {
+        this._jsonContent = this._queryManager.prepare(this._jsonContent);
+    }
+
+    /**
+     * fetch - get the processed data after executing queries
+     *
+     * @returns {mixed}
+     */
     fetch() {
         this._prepare();
+
         return this._jsonContent;
     }
 
-    _get(key, data) {
-        if (!(key in data)) {
-            throw Error('Data not exists');
-        }
-
-        return this._jsonContent[key];
-    }
-
+    /**
+     * at - get the data traversing through the given path hierarchy
+     * Will return the JsonQuery Object instance, so that further
+     * Query can be done on that data
+     *
+     * @param {string} path path hierarchy as a string, separated by '.'
+     *
+     * @returns {JsonQuery} Object reference
+     */
     at(path) {
         const keyParts = path
             .trim()
@@ -83,137 +96,208 @@ class JsonQuery {
             .filter(val => val != '');
 
         for (const key of keyParts) {
-            this._jsonContent = this._get(key, this._jsonContent);
+            this._jsonContent = getByProperty(key, this._jsonContent);
         }
 
         return this;
     }
 
+    /**
+     * from - Alias method of at()
+     *
+     * @param {type} path Description
+     *
+     * @returns {type} Description
+     */
     from(path) {
         return this.at(path);
     }
 
-    _prepare() {
-        if (this._queries.length > 0) {
-            this._executeQueries();
-            this._resetQueries();
-        }
-    }
+    /* ------------------------- Query Methods ------------------------- */
 
-    _executeQueries() {
-        this._jsonContent = this._jsonContent.filter(elem => {
-            let orPassed = false;
-            for (const queryList of this._queries) {
-                let andPassed = true;
-                for (const query of queryList) {
-                    andPassed &= this._matcher.check(
-                        elem[query.key],
-                        query.op,
-                        query.val
-                    );
-                }
-
-                orPassed |= andPassed;
-            }
-
-            return orPassed;
-        });
-    }
-
-    _insertQuery(query) {
-        const index = this._currentQueryInd;
-        if (!(index in this._queries)) {
-            this._queries.push([]);
-        }
-
-        this._queries[index].push(query);
-    }
-
-    /* ---------- Query Methods ------------- */
-    find(path = '') {
+    /**
+     * find - get the data traversing through the given path hierarchy
+     * works like at() method, except it will return the processed data.
+     * So, no further query method can be chained on it.
+     *
+     * @param {type} path Description
+     *
+     * @returns {mixed} Description
+     */
+    find(path) {
         return this.at(path).fetch();
     }
 
+    /**
+     * where - This method is avaialble to run different types of Query on data,
+     * such as if the given key is equal to, not equal to, greater than, less than
+     * etc.
+     * Details can be found at Example.
+     *
+     * @param {string} key 'key' to be searched for
+     * @param {string} op  operator (valid operator lists are defined in Matcher Class)
+     * @param {mixed|Function} val can be a data or an anonymous function
+     *
+     * @returns {JsonQuery} Object instance
+     */
     where(key, op, val) {
         if (key instanceof Function) {
             key(this);
         } else {
-            this._insertQuery({ key, op, val });
+            this._queryManager.insertQuery({ key, op, val });
         }
 
         return this;
     }
 
-    orWhere(key, op, val) {
-        this._currentQueryInd++;
+    /**
+     * orWhere - This method is avaialble to run different types of Query on data,
+     * such as if the given key is equal to, not equal to, greater than, less than
+     * etc. These queries will be ORed with other queries.
+     * Details can be found at Example.
+     *
+     * @param {string} key 'key' to be searched for
+     * @param {string} op  operator (valid operator lists are defined in Matcher Class)
+     * @param {mixed|Function} val can be a data or an anonymous function
+     *
+     * @returns {JsonQuery} Object instance
+     */
+    orWhere(key, op, val = null) {
+        // For a 'Or' type query, every time a new Query group will be created
+        this._queryManager.createQueryGroup();
+
         if (key instanceof Function) {
             key(this);
         } else {
-            this._insertQuery({ key, op, val });
+            this._queryManager.insertQuery({ key, op, val });
         }
 
         return this;
     }
 
+    /**
+     * whereIn - alias for method call: where(key, 'in', array)
+     *
+     * @param {string} key 'key' to be searched for
+     * @param {mixed|Function} val can be a data or an anonymous function
+     *
+     * @returns {JsonQuery} Object instance
+     */
     whereIn(key, val) {
-        this.where(key, 'in', val);
-
-        return this;
+        return this.where(key, 'in', val);
     }
 
+    /**
+     * whereNotIn - alias for method call: where(key, 'notin', array)
+     *
+     * @param {string} key 'key' to be searched for
+     * @param {mixed|Function} val can be a data or an anonymous function
+     *
+     * @returns {JsonQuery} Object instance
+     */
     whereNotIn(key, val) {
-        this.where(key, 'notin', val);
-
-        return this;
+        return this.where(key, 'notin', val);
     }
 
+    /**
+     * whereNull - alias for method call: where(key, 'null')
+     *
+     * @param {string} key 'key' to be searched for
+     *
+     * @returns {JsonQuery} Object instance
+     */
     whereNull(key) {
-        this.where(key, 'null');
-
-        return this;
+        return this.where(key, 'null');
     }
 
+    /**
+     * whereNotNull - alias for method call: where(key, 'notnull')
+     *
+     * @param {string} key 'key' to be searched for
+     *
+     * @returns {JsonQuery} Object instance
+     */
     whereNotNull(key) {
-        this.where(key, 'notnull');
-
-        return this;
+        return this.where(key, 'notnull');
     }
 
+    /**
+     * whereStartsWith - alias for method call: where(key, 'startswith', val)
+     *
+     * @param {string} key 'key' to be searched for
+     * @param {mixed|Function} val can be a data or an anonymous function
+     *
+     * @returns {JsonQuery} Object instance
+     */
     whereStartsWith(key, val) {
-        this.where(key, 'startswith', val);
-
-        return this;
+        return this.where(key, 'startswith', val);
     }
 
+    /**
+     * whereEndsWith - alias for method call: where(key, 'endswith', val)
+     *
+     * @param {string} key 'key' to be searched for
+     * @param {mixed|Function} val can be a data or an anonymous function
+     *
+     * @returns {JsonQuery} Object instance
+     */
     whereEndsWith(key, val) {
-        this.where(key, 'endswith', val);
-
-        return this;
+        return this.where(key, 'endswith', val);
     }
 
+    /**
+     * whereContains - alias for method call: where(key, 'contains', val)
+     *
+     * @param {string} key 'key' to be searched for
+     * @param {mixed|Function} val can be a data or an anonymous function
+     *
+     * @returns {JsonQuery} Object instance
+     */
     whereContains(key, val) {
-        this.where(key, 'contains', val);
-
-        return this;
+        return this.where(key, 'contains', val);
     }
 
-    /* ---------- Aggregate Methods -------------c */
+    /* --------------------- Aggregate Methods ------------------------- */
+
+    /**
+     * sum - If a 'property' given as parameter this method will return the summation
+     * result of the collection contains that property, otherwise it will assume
+     * that the collection is an integer array and just return sum of all of them
+     *
+     * @param {string} property
+     *
+     * @returns {int|float}
+     */
     sum(property) {
         this._prepare();
 
         return this._jsonContent.reduce(
             (acc, current) =>
-                Number(acc) + Number(column ? current[property] : current),
+                Number(acc) + Number(property ? current[property] : current),
             0
         );
     }
 
+    /**
+     * count - returns the size of the collection
+     *
+     * @returns {int}
+     */
     count() {
         this._prepare();
 
         return this._jsonContent.length;
     }
 
+    /**
+     * max - If a 'property' given as parameter this method will return the maximum
+     * value of the collection contains that property, otherwise it will assume
+     * that the collection is an integer array and just return maximum of them
+     *
+     * @param {string} property
+     *
+     * @returns {int|float}
+     */
     max(property) {
         this._prepare();
 
@@ -224,6 +308,15 @@ class JsonQuery {
         }, property ? this._jsonContent[0][property] : this._jsonContent[0]);
     }
 
+    /**
+     * min - If a 'property' given as parameter this method will return the minimum
+     * value of the collection contains that property, otherwise it will assume
+     * that the collection is an integer array and just return minimum of them
+     *
+     * @param {string} property
+     *
+     * @returns {int|float}
+     */
     min(property) {
         this._prepare();
 
@@ -234,24 +327,47 @@ class JsonQuery {
         }, property ? this._jsonContent[0][property] : this._jsonContent[0]);
     }
 
+    /**
+     * avg - returns the average of the result by summing up the values of
+     * given property divided by their count
+     *
+     * @returns {int|float}
+     */
     avg(property) {
         this._prepare();
 
         return this.sum(property) / this.count();
     }
 
+    /**
+     * first - Returns the first element of the collection
+     *
+     * @returns {mixed}
+     */
     first() {
         this._prepare();
 
         return this.count() > 0 ? this._jsonContent[0] : null;
     }
 
+    /**
+     * last - Returns the last element of the collection
+     *
+     * @returns {mixed}
+     */
     last() {
         this._prepare();
 
         return this.count() > 0 ? this._jsonContent[this.count() - 1] : null;
     }
 
+    /**
+     * nth - Returns the nth element of the collection by the given index (n)
+     * if the given index is negative, such as -2, it will return the value of
+     * nth index from the end.
+     *
+     * @returns {mixed}
+     */
     nth(index) {
         this._prepare();
 
@@ -265,6 +381,11 @@ class JsonQuery {
             : this._jsonContent[this.count() + index];
     }
 
+    /**
+     * exists - Check if the content is empty or null
+     *
+     * @returns {boolean}
+     */
     exists() {
         this._prepare();
 
@@ -277,6 +398,13 @@ class JsonQuery {
         return false;
     }
 
+    /**
+     * groupBy - return the grouped result by the given property
+     *
+     * @param {string} property
+     *
+     * @returns {Array}
+     */
     groupBy(property) {
         if (!property) {
             throw Error(
@@ -303,6 +431,21 @@ class JsonQuery {
         return this;
     }
 
+    /**
+     * sort - return the sorted result of the given collection.
+     * By default, the result would be sorted as 'Ascending'. If you want to
+     * sort the result as 'Descending', pass 'desc' as the parameter.
+     * If you want to define a different logic for sorting, pass a compare
+     * Function as parameter.
+     *
+     * This method should be used for array of integers or floats.
+     * If you want to sort an array of Objects by a specific property,
+     * use sortBy() method.
+     *
+     * @param {string|Function} [order=asc]
+     *
+     * @returns {mixed}
+     */
     sort(order = 'asc') {
         this._prepare();
 
@@ -311,32 +454,28 @@ class JsonQuery {
         }
 
         this._jsonContent.sort((a, b) => {
-            // if a compare method is given as first parameter
-            if (order instanceof Function) {
-                return order(a, b);
-            } else {
-                if (typeof a === 'string' || a instanceof String) {
-                    a = a.toLowerCase();
-                }
-
-                if (typeof b === 'string' || b instanceof String) {
-                    b = b.toLowerCase();
-                }
-
-                //comparison
-                if (a < b) {
-                    return order == 'asc' ? -1 : 1;
-                } else if (a > b) {
-                    return order == 'asc' ? 1 : -1;
-                }
-
-                return 0;
-            }
+            return compare(a, b, order);
         });
 
         return this;
     }
 
+    /**
+     * sortBy - return the sorted result of the given collection by the given
+     * property.
+     * By default, the result would be sorted as 'Ascending'. If you want to
+     * sort the result as 'Descending', pass 'desc' as the second parameter.
+     * If you want to define a different logic for sorting, pass a compare
+     * Function as second parameter.
+     *
+     * This method should be used for array of Objects.
+     * If you want to sort an array of integers or floats, use sort() method.
+     *
+     * @param {string} property
+     * @param {string|Function} property
+     * @returns {mixed}
+     * @throws {Error}
+     */
     sortBy(property, order = 'asc') {
         if (!property) {
             throw Error(
@@ -351,38 +490,15 @@ class JsonQuery {
         }
 
         this._jsonContent.sort((a, b) => {
-            let elem_a = a;
-            let elem_b = b;
-
-            if (elem_a instanceof Object && property in elem_a) {
-                elem_a = a[property];
+            if (a instanceof Object && property in a) {
+                a = a[property];
             }
 
-            if (elem_b instanceof Object && property in elem_b) {
-                elem_b = b[property];
+            if (b instanceof Object && property in b) {
+                b = b[property];
             }
 
-            // if a compare method is given as second parameter
-            if (order instanceof Function) {
-                return order(elem_a, elem_b);
-            } else {
-                if (typeof elem_a === 'string' || elem_a instanceof String) {
-                    elem_a = elem_a.toLowerCase();
-                }
-
-                if (typeof elem_b === 'string' || elem_b instanceof String) {
-                    elem_b = elem_b.toLowerCase();
-                }
-
-                //comparison
-                if (elem_a < elem_b) {
-                    return order == 'asc' ? -1 : 1;
-                } else if (elem_a > elem_b) {
-                    return order == 'asc' ? 1 : -1;
-                }
-
-                return 0;
-            }
+            return compare(a, b, order);
         });
 
         return this;
