@@ -1,8 +1,16 @@
 {
-    "name": "JsonQuery",
-    "version": "1.0.0",
+    "name": "JSJsonQ",
     "description": "A simple Javascript Library to Query over Json Data",
+    "tags": ["query", "json"],
+    "version": "1.0.0",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com:me-shaon/JSJsonQ.git"
+    },
+    "bugs": {
+        "url": "https://github.com/me-shaon/JSJsonQ/issues"
+    },
     "main": "index.js",
-    "author": "me-shaon",
+    "author": "me-shaon <shaon.cse81@gmail.com>",
     "license": "CC0 1.0 Universal"
 }

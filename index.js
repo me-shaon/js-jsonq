@@ -1,9 +1,9 @@
 const { parseJson, getByProperty, compare } = require('./Helpers');
 const QueryManager = require('./QueryManager');
 
-class JsonQuery {
+class JSJsonQ {
     /**
-     * constructor - A JsonQuery Object can be initialized with a filepath{type: string}
+     * constructor - A JSJsonQ Object can be initialized with a filepath{type: string}
      * or a Json String{type: string} or a Json Object {type: Object}
      *
      * @param {string|Object} json required
@@ -505,4 +505,4 @@ class JsonQuery {
     }
 }
 
-module.exports = JsonQuery;
+module.exports = JSJsonQ;
