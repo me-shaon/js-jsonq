@@ -10,12 +10,26 @@ This package is inspired from the awesome [jsonq](https://github.com/nahid/jsonq
 npm install js-jsonq
 ```
 
+or
+
+```
+yarn add js-jsonq
+```
+
 ## Usage
 
 Just import/require the package before start using it.
 
+As a Node.js Package:
+
 ```javascript
 const jsonQ = require('js-jsonq');
+```
+
+As a ES6 Module:
+
+```javascript
+import jsonQ from 'js-jsonq';
 ```
 
 You can start using this package right away by importing your Json data from a file:
