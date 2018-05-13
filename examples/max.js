@@ -2,12 +2,11 @@
 Example of max() API
 ---------------------
 You need to pass a property name in max()
-API to get the summation of the values of that property.
+API to get the maximum of the values of that property.
 */
 const jsonQ = require('../index.js');
 let Q = new jsonQ(__dirname + '/data.json');
 
-//To get a direct property 'users' from Json
 const maxPrice = Q.from('products').max('price');
 console.log('-------- Printing maxPrice ---------');
 console.log(maxPrice);

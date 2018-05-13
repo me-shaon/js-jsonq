@@ -361,6 +361,44 @@ const Q = new jsonQ(JsonObject).from('products').avg('price').fetch();
 If the data you are querying is plain array, you don't need to pass the 'property' parameter.
 See detail example [here](examples/avg.js)
 
+### `first()`
+
+It will return the first element of the collection.
+
+**example:**
+
+```Javascript
+const Q = new jsonQ(JsonObject).from('products').first();
+```
+
+See detail example [here](examples/first.js).
+
+### `last()`
+
+It will return the last element of the collection.
+
+**example:**
+
+```Javascript
+const Q = new jsonQ(JsonObject).from('products').last();
+```
+
+See detail example [here](examples/last.js).
+
+### `nth(index)`
+
+* `index` -- index of the element to be returned.
+
+It will return the nth element of the collection. If the given index is a **positive** value, it will return the nth element from the beginning. If the given index is a **negative** value, it will return the nth element from the end.
+
+**example:**
+
+```Javascript
+const Q = new jsonQ(JsonObject).from('products').nth(2);
+```
+
+See detail example [here](examples/nth.js).
+
 ## Bugs and Issues
 
 If you encounter any bugs or issues, feel free to [open an issue at

@@ -2,12 +2,11 @@
 Example of min() API
 ---------------------
 You need to pass a property name in min()
-API to get the summation of the values of that property.
+API to get the minimum of the values of that property.
 */
 const jsonQ = require('../index.js');
 let Q = new jsonQ(__dirname + '/data.json');
 
-//To get a direct property 'users' from Json
 const minPrice = Q.from('products').min('price');
 console.log('-------- Printing minPrice ---------');
 console.log(minPrice);
