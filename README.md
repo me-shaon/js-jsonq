@@ -132,49 +132,49 @@ This method will execute queries and will return the resulted data. You need to 
 
 * `path` -- the path hierarchy of the data you want to find.
 
-    You don't need to call `fetch()` method after this. Because this method will fetch and return the data by itself.
+You don't need to call `fetch()` method after this. Because this method will fetch and return the data by itself.
 
-    **caveat:** You can't chain further query methods after it. If you need that, you should use `at()` or `from()` method.
+**caveat:** You can't chain further query methods after it. If you need that, you should use `at()` or `from()` method.
 
-    **example:**
+**example:**
 
-    Let's say you want to get the value of _'cities'_ property of your Json Data. You can do it like this:
+Let's say you want to get the value of _'cities'_ property of your Json Data. You can do it like this:
 
-    ```Javascript
-    const Q = new jsonQ(JsonObject).find('cities');
-    ```
+```Javascript
+const Q = new jsonQ(JsonObject).find('cities');
+```
 
-    If you want to traverse to more deep in hierarchy, you can do it like:
+If you want to traverse to more deep in hierarchy, you can do it like:
 
-    ```Javascript
-    const Q = new jsonQ(JsonObject).find('cities.1.name');
-    ```
+```Javascript
+const Q = new jsonQ(JsonObject).find('cities.1.name');
+```
 
-    See a detail example [here](examples/find.js).
+See a detail example [here](examples/find.js).
 
 ### `at(path)`
 
 * `path` (optional) -- the path hierarchy of the data you want to start query from.
 
-    By default, query would be started from the root of the JSON Data you've given. If you want to first move to a nested path hierarchy of the data from where you want to start your query, you would use this method. Skipping the `path` parameter or giving **'.'** as parameter will also start query from the root Data.
+By default, query would be started from the root of the JSON Data you've given. If you want to first move to a nested path hierarchy of the data from where you want to start your query, you would use this method. Skipping the `path` parameter or giving **'.'** as parameter will also start query from the root Data.
 
-    Difference between this method and `find()` is that, `find()` method will return the data from the given path hierarchy. On the other hand, this method will return the Object instance, so that you can further chain query methods after it.
+Difference between this method and `find()` is that, `find()` method will return the data from the given path hierarchy. On the other hand, this method will return the Object instance, so that you can further chain query methods after it.
 
-    **example:**
+**example:**
 
-    Let's say you want to start query over the values of _'users'_ property of your Json Data. You can do it like this:
+Let's say you want to start query over the values of _'users'_ property of your Json Data. You can do it like this:
 
-    ```Javascript
-    const Q = new jsonQ(JsonObject).at('users').where('id', '=', 1).fetch();
-    ```
+```Javascript
+const Q = new jsonQ(JsonObject).at('users').where('id', '=', 1).fetch();
+```
 
-    If you want to traverse to more deep in hierarchy, you can do it like:
+If you want to traverse to more deep in hierarchy, you can do it like:
 
-    ```Javascript
-    const Q = new jsonQ(JsonObject).at('users.5.visits').where('year', '=', 2011).fetch();
-    ```
+```Javascript
+const Q = new jsonQ(JsonObject).at('users.5.visits').where('year', '=', 2011).fetch();
+```
 
-    See a detail example [here](examples/at.js).
+See a detail example [here](examples/at.js).
 
 ### `from(path)`
 
@@ -212,21 +212,21 @@ This is an alias method of `at()` and will behave exactly like that. See example
     * `match` : Check if the value of given **key** in data has a Regular Expression match with the given **val**. The `val` parameter should be a **RegExp** for this `op`.
     * `macro` : It would try to match the value of given **key** in data executing the given `val`. The `val` parameter should be a **Function** for this `op`. This function should have a matching logic inside it and return **true** or **false** based on that.
 
-    **example:**
+**example:**
 
-    Let's say you want to find the _'users'_ who has _id_ of `1`. You can do it like this:
+Let's say you want to find the _'users'_ who has _id_ of `1`. You can do it like this:
 
-    ```Javascript
-    const Q = new jsonQ(JsonObject).from('users').where('id', '=', 1).fetch();
-    ```
+```Javascript
+const Q = new jsonQ(JsonObject).from('users').where('id', '=', 1).fetch();
+```
 
-    You can add multiple _where_ conditions. It'll give the result by AND-ing between these multiple where conditions.
+You can add multiple _where_ conditions. It'll give the result by AND-ing between these multiple where conditions.
 
-    ```Javascript
-    const Q = new jsonQ(JsonObject).from('users').where('id', '=', 1).where('location', '=', 'Sylhet').fetch();
-    ```
+```Javascript
+const Q = new jsonQ(JsonObject).from('users').where('id', '=', 1).where('location', '=', 'Sylhet').fetch();
+```
 
-    See a detail example [here](examples/where.js).
+See a detail example [here](examples/where.js).
 
 ### `orWhere(key, op, val)`
 
@@ -239,6 +239,127 @@ const Q = new jsonQ(JsonObject).from('users').where('id', '=', 1).orWhere('id', 
 ```
 
 See detail example [here](examples/orWhere.js).
+
+### `whereIn(key, val)`
+
+* `key` -- the property name of the data
+* `val` -- it should be an **Array**
+
+This method will behave like `where(key, 'in', val)` method call.
+
+### `whereNotIn(key, val)`
+
+* `key` -- the property name of the data
+* `val` -- it should be an **Array**
+
+This method will behave like `where(key, 'notin', val)` method call.
+
+### `whereNull(key)`
+
+* `key` -- the property name of the data
+
+This method will behave like `where(key, 'null')` or `where(key, '=', null)` method call.
+
+### `whereNotNull(key)`
+
+* `key` -- the property name of the data
+
+This method will behave like `where(key, 'notnull')` or `where(key, '!=', null)` method call.
+
+### `whereStartsWith(key, val)`
+
+* `key` -- the property name of the data
+* `val` -- it should be a String
+
+This method will behave like `where(key, 'startswith', val)` method call.
+
+### `whereEndsWith(key, val)`
+
+* `key` -- the property name of the data
+* `val` -- it should be a String
+
+This method will behave like `where(key, 'endswith', val)` method call.
+
+### `whereContains(key, val)`
+
+* `key` -- the property name of the data
+* `val` -- it should be a String
+
+This method will behave like `where(key, 'contains', val)` method call.
+
+### `sum(property)`
+
+* `property` -- the property name of the data
+
+**example:**
+
+Let's say you want to find the sum of the _'price'_ of the _'products'_. You can do it like this:
+
+```Javascript
+const Q = new jsonQ(JsonObject).from('products').sum('price').fetch();
+```
+
+If the data you are aggregating is plain array, you don't need to pass the 'property' parameter.
+See detail example [here](examples/sum.js)
+
+### `count()`
+
+It will return the number of elements in the collection.
+
+**example:**
+
+Let's say you want to find how many elements are in the _'products'_ property. You can do it like:
+
+```Javascript
+const Q = new jsonQ(JsonObject).from('products').count();
+```
+
+See detail example [here](examples/count.js).
+
+### `max(property)`
+
+* `property` -- the property name of the data
+
+**example:**
+
+Let's say you want to find the maximum of the _'price'_ of the _'products'_. You can do it like this:
+
+```Javascript
+const Q = new jsonQ(JsonObject).from('products').max('price').fetch();
+```
+
+If the data you are querying is plain array, you don't need to pass the 'property' parameter.
+See detail example [here](examples/max.js)
+
+### `min(property)`
+
+* `property` -- the property name of the data
+
+**example:**
+
+Let's say you want to find the minimum of the _'price'_ of the _'products'_. You can do it like this:
+
+```Javascript
+const Q = new jsonQ(JsonObject).from('products').min('price').fetch();
+```
+
+If the data you are querying is plain array, you don't need to pass the 'property' parameter.
+See detail example [here](examples/min.js)
+
+### `avg(property)`
+
+* `property` -- the property name of the data
+
+**example:**
+
+Let's say you want to find the average of the _'price'_ of the _'products'_. You can do it like this:
+
+```Javascript
+const Q = new jsonQ(JsonObject).from('products').avg('price').fetch();
+```
+
+If the data you are querying is plain array, you don't need to pass the 'property' parameter.
+See detail example [here](examples/avg.js)
 
 ## Bugs and Issues
 

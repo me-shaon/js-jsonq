@@ -9,7 +9,6 @@ just separate the properties by '.'.
 const jsonQ = require('../index.js');
 let Q = new jsonQ(__dirname + '/data.json');
 
-//To get a direct property 'users' from Json
 const users = Q.at('users')
     .where('id', '=', 1)
     .fetch();

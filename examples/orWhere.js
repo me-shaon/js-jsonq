@@ -37,10 +37,23 @@ orWhere() method can take three parameters: 'key', 'op', 'val'
 const jsonQ = require('../index.js');
 let Q = new jsonQ(__dirname + '/data.json');
 
-//To get a direct property 'users' from Json
 const users = Q.from('users')
     .where('id', '=', 1)
     .orWhere('id', '=', 2)
     .fetch();
 console.log('-------- Printing Users ---------');
 console.log(users);
+
+// resetting the instance to initial state
+Q = q.reset();
+
+//You can pass a anonymous function in 'orWhere' to group multiple conditions
+const result = Q.from('users')
+    .where('id', '=', 1)
+    .orWhere(function(q) {
+        q.where('id', '=', 2).where('city', '!=', 'Barishal');
+    })
+    .fetch();
+
+console.log('-------- Printing Query result ---------');
+console.log(result);
