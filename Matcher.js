@@ -223,7 +223,7 @@ class Matcher {
      * @returns {bool}
      */
     hasMatch(str, pattern) {
-        return RegExp(pattern).test(val);
+        return RegExp(pattern).test(str);
     }
 
     /**
