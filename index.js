@@ -123,8 +123,12 @@ class JSJsonQ {
      * @param {type} path Description
      *
      * @returns {mixed} Description
+     * @throws {Error}
      */
     find(path) {
+        if (!path) {
+            throw Error('Invalid parameter given');
+        }
         return this.at(path).fetch();
     }
 
