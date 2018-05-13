@@ -14,7 +14,7 @@ const parseJson = json => {
         (typeof json === 'string' || json instanceof String) &&
         json.endsWith('.json')
     ) {
-        jsonObject = require(json);
+        jsonObject = require.resolve(`${json}`);
     }
 
     if (typeof jsonObject === 'string' || jsonObject instanceof String) {
