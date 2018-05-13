@@ -6,8 +6,8 @@ API to get the desired result.
 If you want to traverse to multi-level hierarchy,
 just separate the properties by '.'.
 */
-const JsJsonQ = require('../index.js');
-let Q = new JsJsonQ(__dirname + '/data.json');
+const jsonQ = require('../index.js');
+let Q = new jsonQ(__dirname + '/data.json');
 
 //To get a direct property 'users' from Json
 const users = Q.from('users')

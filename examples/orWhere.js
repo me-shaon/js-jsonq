@@ -1,7 +1,7 @@
 /*
-Example of where() API
+Example of orWhere() API
 ---------------------
-where() method can take three parameters: 'key', 'op', 'val'
+orWhere() method can take three parameters: 'key', 'op', 'val'
 
 * `key` -- the property name of the data. Or you can pass a Function here to group multiple query inside it. See details in [example]('./examples/where.js')
 * `val` -- value to be matched with. It can be a _int_, _string_, _bool_ or even _Function_ - depending on the `op`.
@@ -40,18 +40,7 @@ let Q = new jsonQ(__dirname + '/data.json');
 //To get a direct property 'users' from Json
 const users = Q.from('users')
     .where('id', '=', 1)
+    .orWhere('id', '=', 2)
     .fetch();
 console.log('-------- Printing Users ---------');
 console.log(users);
-
-// Resetting the instance to initial state
-// because the previous where() query changed it internal state
-Q = Q.reset();
-
-const multipleWhere = Q.from('users')
-    .where('id', '=', 1)
-    .where('location', '=', 'Sylhet')
-    .fetch();
-
-console.log('-------- Printing Result of multiple where ---------');
-console.log(multipleWhere);

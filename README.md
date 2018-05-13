@@ -1,6 +1,6 @@
 # js-jsonq
 
-**js-jsonq** is a simple, elegant Javascript package to Query over any type of Json Data.
+**js-jsonq** is a simple, elegant Javascript package to Query over any type of JSON Data. It'll make your life easier by giving the flavour of an ORM-like query on your JSON.
 
 This package is inspired from the awesome [jsonq](https://github.com/nahid/jsonq) package.
 
@@ -21,19 +21,19 @@ const jsonQ = require('js-jsonq');
 You can start using this package right away by importing your Json data from a file:
 
 ```javascript
-const Q = new jsonQ('data.json');
+new jsonQ('data.json');
 ```
 
 Or from a Json String:
 
 ```javascript
-const Q = new jsonQ('{"id": 1, "name": "shaon"}');
+new jsonQ('{"id": 1, "name": "shaon"}');
 ```
 
 Or from a Json Object:
 
 ```javascript
-const Q = new jsonQ({ id: 1, name: 'shaon' });
+new jsonQ({ id: 1, name: 'shaon' });
 ```
 
 You can start Query your data using the various query methods such as **find**, **where**, **orWhere**, **whereIn**, **whereStartsWith**, **whereEndsWith**, **whereContains** and so on. Also you can aggregate your data after query using **sum**, **count**, **groupBy**, **max**, **min** etc.
@@ -122,15 +122,67 @@ Shall we?
 
 ## API
 
-Following API examples are shown based on the sample JSON data given [here]('./examples/data.json'). To get a better idea of the examples see that JSON data first. Also detailed examples of each API can be found [here]('./examples').
+Following API examples are shown based on the sample JSON data given [here]('examples/data.json'). To get a better idea of the examples see that JSON data first. Also detailed examples of each API can be found [here]('examples/').
 
 ### `fetch()`
 
 This method will execute queries and will return the resulted data. You need to call it finally after using some query methods. Details can be found in other API examples.
 
+### `find(path)`
+
+* `path` -- the path hierarchy of the data you want to find.
+
+    You don't need to call `fetch()` method after this. Because this method will fetch and return the data by itself.
+
+    **caveat:** You can't chain further query methods after it. If you need that, you should use `at()` or `from()` method.
+
+    **example:**
+
+    Let's say you want to get the value of _'cities'_ property of your Json Data. You can do it like this:
+
+    ```Javascript
+    const Q = new jsonQ(JsonObject).find('cities');
+    ```
+
+    If you want to traverse to more deep in hierarchy, you can do it like:
+
+    ```Javascript
+    const Q = new jsonQ(JsonObject).find('cities.1.name');
+    ```
+
+    See a detail example [here](examples/find.js).
+
+### `at(path)`
+
+* `path` (optional) -- the path hierarchy of the data you want to start query from.
+
+    By default, query would be started from the root of the JSON Data you've given. If you want to first move to a nested path hierarchy of the data from where you want to start your query, you would use this method. Skipping the `path` parameter or giving **'.'** as parameter will also start query from the root Data.
+
+    Difference between this method and `find()` is that, `find()` method will return the data from the given path hierarchy. On the other hand, this method will return the Object instance, so that you can further chain query methods after it.
+
+    **example:**
+
+    Let's say you want to start query over the values of _'users'_ property of your Json Data. You can do it like this:
+
+    ```Javascript
+    const Q = new jsonQ(JsonObject).at('users').where('id', '=', 1).fetch();
+    ```
+
+    If you want to traverse to more deep in hierarchy, you can do it like:
+
+    ```Javascript
+    const Q = new jsonQ(JsonObject).at('users.5.visits').where('year', '=', 2011).fetch();
+    ```
+
+    See a detail example [here](examples/at.js).
+
+### `from(path)`
+
+This is an alias method of `at()` and will behave exactly like that. See example [here]('./examples/from.js').
+
 ### `where(key, op, val)`
 
-* `key` -- the property name of the data. Or you can pass a Function here to group multiple query inside it. See details in [example]('./examples/where.js')
+* `key` -- the property name of the data. Or you can pass a Function here to group multiple query inside it. See details in [example]('examples/where.js')
 * `val` -- value to be matched with. It can be a _int_, _string_, _bool_ or even _Function_ - depending on the `op`.
 * `op` -- operand to be used for matching. The following operands are available to use:
 
@@ -160,74 +212,33 @@ This method will execute queries and will return the resulted data. You need to 
     * `match` : Check if the value of given **key** in data has a Regular Expression match with the given **val**. The `val` parameter should be a **RegExp** for this `op`.
     * `macro` : It would try to match the value of given **key** in data executing the given `val`. The `val` parameter should be a **Function** for this `op`. This function should have a matching logic inside it and return **true** or **false** based on that.
 
-
     **example:**
 
-    Let's say you want to get the value of _'cities'_ property of your Json Data. You can do it like this:
+    Let's say you want to find the _'users'_ who has _id_ of `1`. You can do it like this:
 
     ```Javascript
-    const Q = new jsonQ(JsonObject).find('cities');
+    const Q = new jsonQ(JsonObject).from('users').where('id', '=', 1).fetch();
     ```
 
-    If you want to traverse to more deep in hierarchy, you can do it like:
+    You can add multiple _where_ conditions. It'll give the result by AND-ing between these multiple where conditions.
 
     ```Javascript
-    const Q = new jsonQ(JsonObject).find('cities.1.name');
+    const Q = new jsonQ(JsonObject).from('users').where('id', '=', 1).where('location', '=', 'Sylhet').fetch();
     ```
 
-    See a detail example [here](./examples/find.js).
+    See a detail example [here](examples/where.js).
 
-### `find(path)`
+### `orWhere(key, op, val)`
 
-* `path` -- the path hierarchy of the data you want to find.
+Parameters of `orWhere()` are the same as `where()`. The only difference between `where()` and `orWhere()` is: condition given by the `orWhere()` method will OR-ed the result with other conditions.
 
-    You don't need to call `fetch()` method after this. Because this method will fetch and return the data by itself.
+For example, if you want to find the users with _id_ of `1` or `2`, you can do it like this:
 
-    **caveat:** You can't chain further query methods after it. If you need that, you should use `at()` or `from()` method.
+```Javascript
+const Q = new jsonQ(JsonObject).from('users').where('id', '=', 1).orWhere('id', '=', 2).fetch();
+```
 
-    **example:**
-
-    Let's say you want to get the value of _'cities'_ property of your Json Data. You can do it like this:
-
-    ```Javascript
-    const Q = new jsonQ(JsonObject).find('cities');
-    ```
-
-    If you want to traverse to more deep in hierarchy, you can do it like:
-
-    ```Javascript
-    const Q = new jsonQ(JsonObject).find('cities.1.name');
-    ```
-
-    See a detail example [here](./examples/find.js).
-
-### `at(path)`
-
-* `path` (optional) -- the path hierarchy of the data you want to start query from.
-
-    By default, query would be started from the root of the JSON Data you've given. If you want to first move to a nested path hierarchy of the data from where you want to start your query, you would use this method. Skipping the `path` parameter or giving **'.'** as parameter will also start query from the root Data.
-
-    Difference between this method and `find()` is that, `find()` method will return the data from the given path hierarchy. On the other hand, this method will return the Object instance, so that you can further chain query methods after it.
-
-    **example:**
-
-    Let's say you want to start query over the values of _'users'_ property of your Json Data. You can do it like this:
-
-    ```Javascript
-    const Q = new jsonQ(JsonObject).at('users').where('id', '=', 1).fetch();
-    ```
-
-    If you want to traverse to more deep in hierarchy, you can do it like:
-
-    ```Javascript
-    const Q = new jsonQ(JsonObject).at('users.5.visits').where('year', '=', 2011).fetch();
-    ```
-
-    See a detail example [here](./examples/at.js).
-
-### `from(path)`
-
-This is an alias method of `at()` and will behave exactly like that. See example [here]('./examples/from.js').
+See detail example [here]('examples/orWhere.js').
 
 ## Bugs and Issues
 
