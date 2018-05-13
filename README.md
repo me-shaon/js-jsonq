@@ -399,6 +399,67 @@ const Q = new jsonQ(JsonObject).from('products').nth(2);
 
 See detail example [here](examples/nth.js).
 
+### `exists()`
+
+It will return **true** if the element is not **empty** or not **null** or not an **empty array** or not an **empty object**.
+
+**example:**
+
+Let's say you want to find how many elements are in the _'products'_ property. You can do it like:
+
+```Javascript
+const Q = new jsonQ(JsonObject).from('products').count();
+```
+
+See detail example [here](examples/exists.js).
+
+### `groupBy(property)`
+
+* `property` -- The property by which you want to group the collection.
+
+**example:**
+
+Let's say you want to group the _'users'_ data based on the _'location'_ property. You can do it like:
+
+```Javascript
+const Q = new jsonQ(JsonObject).from('users').groupBy('location').fetch();
+```
+
+See detail example [here](examples/groupBy.js).
+
+### `sort(order)`
+
+* `order` -- If you skip the _'order'_ property the data will be by default ordered as **ascending**. You need to pass **'desc'** as the _'order'_ parameter to sort the data in **descending** order. Also, you can pass a compare function in _'order'_ parameter to define your own logic to order the data.
+
+**Note:** This method should be used for plain Array. If you want to sort an Array of Objects you should use the **sortBy()** method described later.
+
+**example:**
+
+Let's say you want to sort the _'arr'_ data. You can do it like:
+
+```Javascript
+const Q = new jsonQ(JsonObject).from('arr').sort().fetch();
+```
+
+See detail example [here](examples/sort.js).
+
+### `sortBy(property, order)`
+
+* `property` -- You need to pass the property name on which the sorting will be done.
+* `order` -- If you skip the _'order'_ property the data will be by default ordered as **ascending**. You need to pass **'desc'** as the _'order'_ parameter to sort the data in **descending** order. Also, you can pass a compare function in _'order'_ parameter to define your own logic to order the data.
+
+**Note:** This method should be used for Array of Objects. If you want to sort a plain Array you should use the **sort()** method described earlier.
+
+**example:**
+
+Let's say you want to sort the _'price'_ data of _'products'_. You can do it like:
+
+```Javascript
+const Q = new jsonQ(JsonObject).from('products').sortBy('price').fetch();
+```
+
+See detail example [here](examples/sortBy.js).
+
 ## Bugs and Issues
 
 If you encounter any bugs or issues, feel free to [open an issue at

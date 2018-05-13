@@ -393,13 +393,16 @@ class JSJsonQ {
     exists() {
         this._prepare();
 
-        if (Array.isArray(this._jsonContent) && this._jsonContent.length > 0) {
-            return true;
-        } else if (this._jsonContent) {
-            return true;
+        if (Array.isArray(this._jsonContent)) {
+            return this._jsonContent.length > 0;
+        } else if (
+            this._jsonContent instanceof Object &&
+            this._jsonContent.constructor === Object
+        ) {
+            return Object.keys(this._jsonContent).length > 0;
         }
 
-        return false;
+        return !!this._jsonContent;
     }
 
     /**
