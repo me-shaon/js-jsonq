@@ -52,11 +52,11 @@ class JSJsonQ {
     }
 
     /**
-     * clone - Clone and return the exact same copy of the this Object instance
+     * copy - Clone and return the exact same copy of the this Object instance
      *
      * @returns {JsonQuery}
      */
-    clone() {
+    copy() {
         return Object.assign(Object.create(Object.getPrototypeOf(this)), this);
     }
 

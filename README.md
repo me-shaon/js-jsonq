@@ -153,7 +153,7 @@ Following API examples are shown based on the sample JSON data given [here](exam
 * [sort](#sortorder)
 * [sortBy](#sortbyproperty-order)
 * [reset](#resetdata)
-* [clone](#clone)
+* [copy](#copy)
 
 ### `fetch()`
 
@@ -503,11 +503,11 @@ At any point, you might want to reset the Object instance to a completely differ
 
 See a detail example [here](examples/reset.js).
 
-### `clone()`
+### `copy()`
 
 It will return a complete clone of the Object instance.
 
-See a detail example [here](examples/clone.js).
+See a detail example [here](examples/copy.js).
 
 ## Bugs and Issues
 
