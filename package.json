@@ -1,8 +1,14 @@
 {
     "name": "js-jsonq",
     "description": "A simple Javascript Library to Query over Json Data",
-    "tags": ["query", "filter", "json", "jsonq", "json-query"],
-    "version": "1.0.0",
+    "tags": [
+        "query",
+        "filter",
+        "json",
+        "jsonq",
+        "json-query"
+    ],
+    "version": "1.0.1",
     "repository": {
         "type": "git",
         "url": "git://github.com:me-shaon/js-jsonq.git"
