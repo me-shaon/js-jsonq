@@ -294,6 +294,15 @@ class JSJsonQ {
     }
 
     /**
+     * size - returns the size of the collection
+     *
+     * @returns {int}
+     */
+    size() {
+        return this.count();
+    }
+
+    /**
      * max - If a 'property' given as parameter this method will return the maximum
      * value of the collection contains that property, otherwise it will assume
      * that the collection is an integer array and just return maximum of them

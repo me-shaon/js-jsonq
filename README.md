@@ -316,6 +316,10 @@ const Q = new jsonQ(JsonObject).from('products').count();
 
 See detail example [here](examples/count.js).
 
+### `size()`
+
+This is an alias method of `count()`.
+
 ### `max(property)`
 
 * `property` -- the property name of the data
