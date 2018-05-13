@@ -124,6 +124,37 @@ Shall we?
 
 Following API examples are shown based on the sample JSON data given [here](examples/data.json). To get a better idea of the examples see that JSON data first. Also detailed examples of each API can be found [here](examples/).
 
+**List of API:**
+
+* [fetch](#fetch)
+* [find](#findpath)
+* [at](#atpath)
+* [from](#frompath)
+* [where](#wherekey-op-val)
+* [orWhere](#orwherekey-op-val)
+* [whereIn](#whereinkey-val)
+* [whereNotIn](#wherenotinkey-val)
+* [whereNull](#wherenullkey)
+* [whereNotNull](#wherenotnullkey)
+* [whereStartsWith](#wherestartswithkey-val)
+* [whereEndsWith](#whereendswithkey-val)
+* [whereContains](#wherecontainskey-val)
+* [sum](#sumproperty)
+* [count](#count)
+* [size](#size)
+* [max](#maxproperty)
+* [min](#minproperty)
+* [avg](#avgproperty)
+* [first](#first)
+* [last](#last)
+* [nth](#nthindex)
+* [exists](#exists)
+* [groupBy](#groupbyproperty)
+* [sort](#sortorder)
+* [sortBy](#sortbyproperty-order)
+* [reset](#resetdata)
+* [clone](#clone)
+
 ### `fetch()`
 
 This method will execute queries and will return the resulted data. You need to call it finally after using some query methods. Details can be found in other API examples.
