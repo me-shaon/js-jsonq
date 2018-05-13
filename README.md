@@ -122,7 +122,7 @@ Shall we?
 
 ## API
 
-Following API examples are shown based on the sample JSON data given [here]('examples/data.json'). To get a better idea of the examples see that JSON data first. Also detailed examples of each API can be found [here]('examples/').
+Following API examples are shown based on the sample JSON data given [here](examples/data.json). To get a better idea of the examples see that JSON data first. Also detailed examples of each API can be found [here](examples/).
 
 ### `fetch()`
 
@@ -178,11 +178,11 @@ This method will execute queries and will return the resulted data. You need to 
 
 ### `from(path)`
 
-This is an alias method of `at()` and will behave exactly like that. See example [here]('./examples/from.js').
+This is an alias method of `at()` and will behave exactly like that. See example [here](examples/from.js).
 
 ### `where(key, op, val)`
 
-* `key` -- the property name of the data. Or you can pass a Function here to group multiple query inside it. See details in [example]('examples/where.js')
+* `key` -- the property name of the data. Or you can pass a Function here to group multiple query inside it. See details in [example](examples/where.js)
 * `val` -- value to be matched with. It can be a _int_, _string_, _bool_ or even _Function_ - depending on the `op`.
 * `op` -- operand to be used for matching. The following operands are available to use:
 
@@ -238,7 +238,7 @@ For example, if you want to find the users with _id_ of `1` or `2`, you can do i
 const Q = new jsonQ(JsonObject).from('users').where('id', '=', 1).orWhere('id', '=', 2).fetch();
 ```
 
-See detail example [here]('examples/orWhere.js').
+See detail example [here](examples/orWhere.js).
 
 ## Bugs and Issues
 
