@@ -464,6 +464,20 @@ const Q = new jsonQ(JsonObject).from('products').sortBy('price').fetch();
 
 See detail example [here](examples/sortBy.js).
 
+### `reset(data)`
+
+* `data` -- can be a JSON file path, or a JSON string or a JSON Object. If no data passed in the `data` parameter, the `jsonQ` Object instance will be reset to previously initialized data.
+
+At any point, you might want to reset the Object instance to a completely different set of data and then query over it. You can use this method in that case.
+
+See a detail example [here](examples/reset.js).
+
+### `clone()`
+
+It will return a complete clone of the Object instance.
+
+See a detail example [here](examples/clone.js).
+
 ## Bugs and Issues
 
 If you encounter any bugs or issues, feel free to [open an issue at
