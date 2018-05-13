@@ -524,10 +524,11 @@ It will return a complete clone of the Object instance.
 
 See a detail example [here](examples/copy.js).
 
-### `chunk()`
+### `chunk(size)`
 
 It will return a complete new array after chunking your array with specific size.
 
+See a detail example [here](examples/chunk.js).
 
 ## Bugs and Issues
 

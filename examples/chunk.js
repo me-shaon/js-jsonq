@@ -6,7 +6,7 @@ API your desired result.
 */
 
 const jsonQ = require('../index.js');
-let Q = new jsonQ(require('./data.json'));
+let Q = new jsonQ(__dirname + '/data.json');
 
 const chunking = Q.from('users')
     .where('location', '=', 'Barisal')
