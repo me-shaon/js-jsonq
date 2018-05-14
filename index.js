@@ -103,7 +103,9 @@ class JSJsonQ {
 
         _newContent.length ? null : _newContent.push(_hadContent);
 
-        return _newContent;
+        this._jsonContent = _newContent;
+
+        return this._jsonContent;
 
     }
 
