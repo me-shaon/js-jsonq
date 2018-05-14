@@ -81,6 +81,32 @@ class JSJsonQ {
     }
 
     /**
+    * chunk - group the resulted collection to multiple chunk
+    *
+    * @param {integer} The length of each chunk
+    * @return {Array} New Array 
+    */
+
+    chunk(size = 0) {
+        if(size <= 0) {
+            throw Error('Invalid chunk size');
+        }
+        
+        this._prepare();
+
+        let _newContent = [];
+
+        while(this._jsonContent.count() > 0) {
+            _newContent.push(this._jsonContent.splice(0, size));
+        }
+
+        this._jsonContent = _newContent;
+
+        return this._jsonContent;
+    }
+
+
+    /**
      * at - get the data traversing through the given path hierarchy
      * Will return the JsonQuery Object instance, so that further
      * Query can be done on that data
