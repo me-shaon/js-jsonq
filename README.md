@@ -541,3 +541,8 @@ Also, you can shoot me an email to
 ## Credit
 
 Speical thanks to [Nahid Bin Azhar](https://github.com/nahid) for the inspiration and guidance for the package.
+
+## Contributions
+
+If your PR is successfully merged to this project, feel free to add yourself in the list of contributors. 
+See all the [contributors](CONTRIBUTORS.md).
