@@ -13,3 +13,12 @@ const chunking = Q.from('users')
 
 console.log('-------- Printing Result of chunk ---------');
 console.log(chunking);
+
+Q = Q.reset();
+
+
+const transformedChunk = Q.from('users')
+    .where('location', '=', 'Barisal')
+    .chunk(4, (chunk) => {
+        return chunk.map((data) => {{ id: data.id}});
+    });

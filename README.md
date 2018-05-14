@@ -168,7 +168,7 @@ Following API examples are shown based on the sample JSON data given [here](exam
 * [sortBy](#sortbyproperty-order)
 * [reset](#resetdata)
 * [copy](#copy)
-* [chunk](#chunk)
+* [chunk](#chunksize)
 
 ### `fetch()`
 
@@ -524,9 +524,11 @@ It will return a complete clone of the Object instance.
 
 See a detail example [here](examples/copy.js).
 
-### `chunk(size)`
+### `chunk(size, fn)`
 
 It will return a complete new array after chunking your array with specific size.
+If you want to transform each of the chunk based on any specific logic, pass a
+function containing that transformation as the second parameter of the `chunk()` method. 
 
 See a detail example [here](examples/chunk.js).
 
@@ -544,5 +546,5 @@ Speical thanks to [Nahid Bin Azhar](https://github.com/nahid) for the inspiratio
 
 ## Contributions
 
-If your PR is successfully merged to this project, feel free to add yourself in the list of contributors. 
+If your PR is successfully merged to this project, feel free to add yourself in the list of contributors.
 See all the [contributors](CONTRIBUTORS.md).

@@ -84,20 +84,26 @@ class JSJsonQ {
     * chunk - group the resulted collection to multiple chunk
     *
     * @param {integer} The length of each chunk
-    * @return {Array} New Array 
+    * @param {fn} an anonymous function
+    * @return {Array} New Array
     */
-
-    chunk(size = 0) {
+    chunk(size = 0, fn = null) {
         if(size <= 0) {
             throw Error('Invalid chunk size');
         }
-        
+
         this._prepare();
 
         let _newContent = [];
 
         while(this._jsonContent.count() > 0) {
             _newContent.push(this._jsonContent.splice(0, size));
+        }
+
+        if(fn instanceof Function) {
+            for(let i = 0; i < this._jsonContent.length; i++) {
+                _newContent[i] = fn(_newContent[i]);
+            }
         }
 
         this._jsonContent = _newContent;
