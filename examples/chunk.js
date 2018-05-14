@@ -1,8 +1,7 @@
 /*
 Example of Chunk() API
 ---------------------
-You just need to pass integer number to chunk 
-API your desired result.
+You need to pass an integer number to chunk method to get your desired result.
 */
 
 const jsonQ = require('../index.js');
