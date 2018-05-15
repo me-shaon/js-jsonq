@@ -43,7 +43,7 @@ class JSJsonQ {
         if (Array.isArray(data)) {
             this._jsonContent = Array.from(data);
         } else {
-            this._jsonContent = Object.assign({}, data);
+            this._jsonContent = JSON.parse(JSON.stringify(data));
         }
 
         this._queryManager.reset();
